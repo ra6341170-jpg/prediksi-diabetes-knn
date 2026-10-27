@@ -7,11 +7,11 @@ from sklearn.neighbors import KNeighborsClassifier
 st.set_page_config(
     page_title="Sistem Pendukung Keputusan - Prediksi Risiko Diabetes",
     page_icon="🧬",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="expanded",
 )
 
-# Custom CSS untuk mempercantik tampilan
+# Custom CSS untuk mempercantik tampilan agar lebih rapi dan profesional
 st.markdown(
     """
     <style>
@@ -19,10 +19,20 @@ st.markdown(
         font-size: 2.2rem;
         color: #1E3A8A;
         font-weight: 700;
+        text-align: center;
     }
     .sub-header {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: #4B5563;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .card-container {
+        background-color: #F8FAFC;
+        padding: 25px;
+        border-radius: 12px;
+        border: 1px solid #E2E8F0;
+        margin-bottom: 20px;
     }
     </style>
 """,
@@ -45,7 +55,6 @@ with st.sidebar:
 # Memuat Dataset dari file Excel secara otomatis
 @st.cache_data
 def load_data():
-  # Membaca file excel 'data-pasien.xlsx'
   df = pd.read_excel("data-pasien.xlsx", sheet_name="Data Pasien")
   return df
 
@@ -82,12 +91,11 @@ if menu == "Dashboard & Prediksi":
   )
   st.markdown("---")
 
-  col_input, col_result = st.columns([1.2, 1], gap="large")
-
-  with col_input:
-    st.subheader("📝 Input Data Pasien Baru")
+  # SECTION 1: INPUT DATA PASIEN BARU (Full Width / Lebar Penuh)
+  st.subheader("📝 Input Data Pasien Baru")
+  with st.container():
     with st.form("form_prediksi"):
-      c1, c2 = st.columns(2)
+      c1, c2 = st.columns(2, gap="large")
       with c1:
         usia = st.number_input("Usia (Tahun)", min_value=1, max_value=100, value=42)
         bmi = st.number_input(
@@ -111,47 +119,61 @@ if menu == "Dashboard & Prediksi":
             ),
         )
 
+      st.markdown("")
       submitted = st.form_submit_button(
           "🔍 Analisis Risiko Pasien", type="primary", use_container_width=True
       )
 
-  with col_result:
-    st.subheader("📊 Hasil Evaluasi Model")
-    if submitted:
-      data_baru = np.array([[usia, bmi, glukosa, td, riwayat]])
-      prediksi = knn.predict(data_baru)[0]
-      probabilitas = knn.predict_proba(data_baru)[0]
-      jarak, indeks_tetangga = knn.kneighbors(data_baru)
+  st.markdown("<br>", unsafe_allow_html=True)
 
+  # SECTION 2: HASIL EVALUASI MODEL (Tepat di bawah input, lebar penuh & leluasa)
+  st.subheader("📊 Hasil Evaluasi Model")
+
+  if submitted:
+    data_baru = np.array([[usia, bmi, glukosa, td, riwayat]])
+    prediksi = knn.predict(data_baru)[0]
+    probabilitas = knn.predict_proba(data_baru)[0]
+    jarak, indeks_tetangga = knn.kneighbors(data_baru)
+
+    # Menampilkan hasil dalam container agar tampak rapi
+    with st.container():
       if prediksi == 1:
-        st.error("### Kesimpulan: RISIKO TINGGI")
-        st.markdown(
-            "Pasien diindikasikan memiliki karakteristik yang masuk dalam"
-            " kelompok **Risiko Tinggi** (Kelas 1)."
+        st.error(
+            "### Kesimpulan: RISIKO TINGGI (Kelas 1)\nPasien diindikasikan"
+            " memiliki karakteristik yang masuk dalam kelompok risiko tinggi"
+            " berdasarkan parameter klinis yang dimasukkan."
         )
       else:
-        st.success("### Kesimpulan: RISIKO RENDAH")
-        st.markdown(
-            "Pasien diindikasikan memiliki karakteristik yang masuk dalam"
-            " kelompok **Risiko Rendah** (Kelas 0)."
+        st.success(
+            "### Kesimpulan: RISIKO RENDAH (Kelas 0)\nPasien diindikasikan"
+            " memiliki karakteristik yang masuk dalam kelompok risiko rendah."
+        )
+
+      m1, m2 = st.columns(2)
+      with m1:
+        st.metric(label="Parameter K-NN", value=f"K = {k_val}")
+      with m2:
+        st.metric(
+            label="Tingkat Keyakinan Model",
+            value=f"{max(probabilitas)*100:.1f}%",
         )
 
       st.markdown("---")
-      st.markdown(f"**Parameter K-NN:** K = {k_val}")
-      st.markdown(
-          f"**Tingkat Keyakinan Model:**"
-          f" {max(probabilitas)*100:.1f}%"
-      )
-
-      # Menampilkan tetangga terdekat
-      with st.expander("🔎 Lihat Detail Tetangga Terdekat (Nearest Neighbors)"):
+      with st.expander(
+          "🔎 Lihat Detail Tetangga Terdekat (Nearest Neighbors)", expanded=True
+      ):
+        st.write(
+            "Data historis pasien terdekat yang menjadi acuan perhitungan"
+            " kemiripan jarak (Euclidean Distance):"
+        )
         pasien_terdekat = df_latih.iloc[indeks_tetangga[0]]
         st.dataframe(pasien_terdekat, use_container_width=True)
-    else:
-      st.info(
-          "Silakan masukkan parameter klinis pasien di sebelah kiri dan klik"
-          " tombol **Analisis Risiko Pasien** untuk melihat hasil prediksi."
-      )
+  else:
+    st.info(
+        "👆 Silakan isi formulir parameter klinis di atas, lalu klik tombol"
+        " **Analisis Risiko Pasien** untuk melihat hasil evaluasi secara"
+        " leluasa di sini."
+    )
 
 
 # --- HALAMAN 2: EKSPLORASI DATASET ---
