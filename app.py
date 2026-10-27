@@ -102,11 +102,9 @@ if menu == "Dashboard & Prediksi":
   st.subheader("📊 Hasil Evaluasi Model")
 
   if submitted:
-    # Validasi agar nilai K tidak melebihi jumlah total data latih
     if k_val > len(df_latih):
       st.error(f"Nilai K ({k_val}) tidak boleh melebihi jumlah total data latih ({len(df_latih)} data)!")
     else:
-      # Inisialisasi dan fitting ulang model KNN berdasarkan K yang dipilih user
       knn = KNeighborsClassifier(n_neighbors=k_val)
       knn.fit(X, y)
 
@@ -148,8 +146,24 @@ elif menu == "Eksplorasi Dataset":
 # --- HALAMAN 3: TENTANG METODE KNN ---
 elif menu == "Tentang Metode KNN":
   st.markdown('<p class="main-header">Tentang Metode K-Nearest Neighbors (KNN)</p>', unsafe_allow_html=True)
-  st.write("**K-Nearest Neighbors (KNN)** adalah algoritma supervised learning yang bekerja dengan mencari jarak terdekat antara data uji (pasien baru) dengan sejumlah $k$ data pelatihan terdekat.")
-  st.markdown("#### Langkah Kerja Sistem:")
-  st.markdown("1. **Menentukan Nilai K:** Nilai $K$ dapat diatur secara fleksibel melalui panel input utama.")
-  st.markdown("2. **Menghitung Jarak:** Mengukur jarak kemiripan menggunakan jarak Euclidean antara pasien baru dengan seluruh data historis.")
-  st.markdown("3. **Mayoritas Voting:** Mengambil sejumlah $K$ data historis berjarak terdekat, lalu menentukan kelas mayoritas sebagai hasil prediksi.")
+  st.write("**K-Nearest Neighbors (KNN)** adalah algoritma pembelajaran mesin berbasis *supervised learning* yang digunakan untuk melakukan klasifikasi berdasarkan kemiripan data (jarak terdekat).")
+  
+  st.markdown("---")
+  st.subheader("📐 Rumus Perhitungan Jarak (Euclidean Distance)")
+  st.write("Untuk mengukur jarak antara data pasien baru dengan data latih historis dalam sistem ini, digunakan rumus jarak Euclidean:")
+  
+  # Menampilkan rumus matematika menggunakan LaTeX
+  st.latex(r"d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}")
+  
+  st.markdown("Keterangan rumus:")
+  st.markdown("- $d(x, y)$ = Jarak antara data uji ($x$) dan data latih ($y$)")
+  st.markdown("- $x_i$ = Nilai fitur pada data pasien baru")
+  st.markdown("- $y_i$ = Nilai fitur pada data pelatihan historis")
+  st.markdown("- $n$ = Jumlah total fitur atribut (Usia, BMI, Glukosa, Tekanan Darah, Riwayat Keluarga)")
+
+  st.markdown("---")
+  st.subheader("⚙️ Langkah Kerja Sistem:")
+  st.markdown("1. **Menentukan Nilai K:** Pengguna dapat menentukan jumlah tetangga terdekat ($K$) secara dinamis.")
+  st.markdown("2. **Menghitung Jarak:** Sistem menghitung nilai jarak Euclidean dari pasien baru ke seluruh data pasien di file Excel.")
+  st.markdown("3. **Mengurutkan Jarak:** Mengurutkan hasil perhitungan jarak dari yang terkecil (paling dekat).")
+  st.markdown("4. **Mayoritas Voting:** Mengambil $K$ data terdekat, lalu menentukan kelas mayoritas (Risiko Rendah / Tinggi) sebagai hasil prediksi akhir.")
