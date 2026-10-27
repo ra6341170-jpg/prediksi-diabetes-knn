@@ -2,13 +2,16 @@
 
 Aplikasi web interaktif berbasis Python dan Streamlit untuk mengidentifikasi tingkat risiko diabetes pada pasien menggunakan algoritma **K-Nearest Neighbors (KNN)**. Proyek ini dikembangkan sebagai bagian dari penugasan akademik mata kuliah Data Mining.
 
+🌐 **Akses Aplikasi Secara Online:**  
+👉 [Link Web Streamlit Prediksi Risiko Diabetes](https://prediksi-diabetes-knn-odkxzsgx7bq36gtfnzumrf.streamlit.app/)
+
 ---
 
 ## 📋 Fitur Utama
 - **Multi-Page Layout & Desain Modern**: Antarmuka terstruktur dengan sidebar navigasi interaktif ala aplikasi enterprise.
 - **Dynamic Data Loading**: Memuat dataset historis secara otomatis langsung dari file eksternal (`data-pasien.xlsx`).
-- **Algoritma K-Nearest Neighbors (KNN)**: Menggunakan $K = 3$ untuk mengklasifikasikan risiko pasien berdasarkan kemiripan jarak fitur klinis.
-- **Transparansi Evaluasi**: Menampilkan tingkat keyakinan (*confidence level*) model serta rincian tetangga terdekat (*Nearest Neighbors*) secara transparan.
+- **Parameter K Dinamis**: Pengguna dapat mengatur nilai $K$ secara fleksibel melalui antarmuka utama.
+- **Transparansi Evaluasi**: Menampilkan tingkat keyakinan (*confidence level*) model serta rincian tetangga terdekat (*Nearest Neighbors*) secara transparan menggunakan perhitungan jarak Euclidean.
 
 ---
 
@@ -31,7 +34,7 @@ Sistem ini memproses 5 parameter klinis utama dari data pasien:
 prediksi-diabetes-knn/
 │
 ├── .gitignore          # Konfigurasi file/folder yang diabaikan Git
-├── requirements.txt    # Daftar dependensi library Python
+├── requirements.txt    # Daftar dependensi library Python (termasuk openpyxl)
 ├── README.md           # Dokumentasi proyek
 ├── data-pasien.xlsx    # Dataset acuan pasien (Excel)
 └── app.py              # Kode utama aplikasi web Streamlit
