@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -31,15 +32,20 @@ st.markdown("""
 
 # Sidebar Navigasi & Informasi
 with st.sidebar:
-    st.image("https://img.icons8.com/color/96/diabetes.png", width=80)
-    st.title("Menu Utama")
-    menu = st.radio(
-        "Pilih Halaman:",
-        ["Dashboard & Prediksi", "Eksplorasi Dataset", "Tentang Metode KNN"],
-    )
-    st.markdown("---")
-    st.markdown("**Dibuat oleh:** Rizky Ardiansyah")
-    st.markdown("**Mata Kuliah:** Data Mining")
+  st.image("https://img.icons8.com/color/96/diabetes.png", width=80)
+  st.title("Menu Utama")
+  menu = st.radio(
+      "Pilih Halaman:",
+      [
+          "Dashboard & Prediksi",
+          "Ilustrasi Grafik KNN",
+          "Eksplorasi Dataset",
+          "Tentang Metode KNN",
+      ],
+  )
+  st.markdown("---")
+  st.markdown("**Dibuat oleh:** Rizky Ardiansyah")
+  st.markdown("**Mata Kuliah:** Data Mining / SPK")
 
 
 # Memuat Dataset dari file Excel secara otomatis
@@ -66,7 +72,6 @@ if menu == "Dashboard & Prediksi":
   st.markdown('<p class="sub-header">Implementasi Algoritma K-Nearest Neighbors (KNN) dengan Parameter K Dinamis.</p>', unsafe_allow_html=True)
   st.markdown("---")
 
-  # SECTION 1: INPUT DATA PASIEN BARU & SETTING K
   st.subheader("📝 Input Data Pasien Baru & Parameter KNN")
   with st.container():
     with st.form("form_prediksi"):
@@ -83,7 +88,6 @@ if menu == "Dashboard & Prediksi":
             format_func=lambda x: "Ada (1)" if x == 1 else "Tidak Ada (0)"
         )
         
-        # PENGATURAN NILAI K (Diletakkan di bawah riwayat keluarga agar rapi)
         k_val = st.slider(
             "Pilih Nilai K (Jumlah Tetangga Terdekat)", 
             min_value=1, 
@@ -98,7 +102,6 @@ if menu == "Dashboard & Prediksi":
 
   st.markdown("<br>", unsafe_allow_html=True)
 
-  # SECTION 2: HASIL EVALUASI MODEL
   st.subheader("📊 Hasil Evaluasi Model")
 
   if submitted:
@@ -128,42 +131,120 @@ if menu == "Dashboard & Prediksi":
         st.markdown("---")
         with st.expander(f"🔎 Lihat Detail {k_val} Tetangga Terdekat (Nearest Neighbors)", expanded=True):
           st.write(f"Daftar {k_val} data historis pasien terdekat yang menjadi acuan perhitungan jarak (Euclidean Distance):")
-          pasien_terdekat = df_latih.iloc[indeks_tetangga[0]]
-          st.dataframe(pasien_terdekat, use_container_width=True)
+          
+          # Membuat dataframe tetangga terdekat dan meletakkan Jarak_Euclidean di kolom paling akhir (setelah Kelas)
+          df_tetangga = df_latih.iloc[indeks_tetangga[0]].copy()
+          df_tetangga["Jarak_Euclidean"] = np.round(jarak[0], 4)
+          
+          st.dataframe(df_tetangga, use_container_width=True)
   else:
     st.info("👆 Silakan atur parameter dan isi formulir di atas, lalu klik tombol **Analisis Risiko Pasien**.")
 
 
-# --- HALAMAN 2: EKSPLORASI DATASET ---
+# --- HALAMAN 2: ILUSTRASI GRAFIK KNN ---
+elif menu == "Ilustrasi Grafik KNN":
+  st.markdown('<p class="main-header">Ilustrasi Visual Algoritma KNN</p>', unsafe_allow_html=True)
+  st.write("Visualisasi sebaran data pelatihan pasien berdasarkan atribut yang dapat dipilih bebas untuk melihat posisi titik data secara spasial.")
+
+  col_f1, col_f2 = st.columns(2)
+  with col_f1:
+    fitur_x = st.selectbox(
+        "Pilih Atribut Sumbu X:",
+        ["Glukosa", "BMI", "Usia", "Tekanan_Darah"],
+        index=0,
+    )
+  with col_f2:
+    fitur_y = st.selectbox(
+        "Pilih Atribut Sumbu Y:",
+        ["BMI", "Glukosa", "Usia", "Tekanan_Darah"],
+        index=0,
+    )
+
+  fig, ax = plt.subplots(figsize=(8, 5))
+
+  df_rendah = df_latih[df_latih["Kelas"] == 0]
+  df_tinggi = df_latih[df_latih["Kelas"] == 1]
+
+  ax.scatter(df_rendah[fitur_x], df_rendah[fitur_y], color="#10B981", s=100, label="Risiko Rendah (0)", edgecolors="black")
+  ax.scatter(df_tinggi[fitur_x], df_tinggi[fitur_y], color="#EF4444", s=100, label="Risiko Tinggi (1)", edgecolors="black")
+
+  ax.set_xlabel(fitur_x.replace("_", " "), fontsize=12, fontweight="bold")
+  ax.set_ylabel(fitur_y.replace("_", " "), fontsize=12, fontweight="bold")
+  ax.set_title(f"Ilustrasi Sebaran Data Pasien ({fitur_x} vs {fitur_y})", fontsize=14, fontweight="bold", color="#1E3A8A")
+  ax.grid(True, linestyle="--", alpha=0.6)
+  ax.legend()
+
+  st.pyplot(fig)
+  st.info("💡 Grafik di atas menampilkan pemetaan sebaran data historis pasien berdasarkan kelas risikonya.")
+
+
+# --- HALAMAN 3: EKSPLORASI DATASET ---
 elif menu == "Eksplorasi Dataset":
   st.markdown('<p class="main-header">Eksplorasi Dataset Latih</p>', unsafe_allow_html=True)
   st.write("Berikut adalah data historis pasien yang dimuat langsung dari file **data-pasien.xlsx**:")
   st.dataframe(df_latih, use_container_width=True)
+  
   st.markdown("### Ringkasan Statistik Data")
   st.dataframe(df_latih.describe(), use_container_width=True)
 
 
-# --- HALAMAN 3: TENTANG METODE KNN ---
+# --- HALAMAN 4: TENTANG METODE KNN (BAHASA SEDERHANA & MUDAH DIPAHAMI) ---
 elif menu == "Tentang Metode KNN":
   st.markdown('<p class="main-header">Tentang Metode K-Nearest Neighbors (KNN)</p>', unsafe_allow_html=True)
-  st.write("**K-Nearest Neighbors (KNN)** adalah algoritma pembelajaran mesin berbasis *supervised learning* yang digunakan untuk melakukan klasifikasi berdasarkan kemiripan data (jarak terdekat).")
-  
-  st.markdown("---")
-  st.subheader("📐 Rumus Perhitungan Jarak (Euclidean Distance)")
-  st.write("Untuk mengukur jarak antara data pasien baru dengan data latih historis dalam sistem ini, digunakan rumus jarak Euclidean:")
-  
-  # Menampilkan rumus matematika menggunakan LaTeX
-  st.latex(r"d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}")
-  
-  st.markdown("Keterangan rumus:")
-  st.markdown("- $d(x, y)$ = Jarak antara data uji ($x$) dan data latih ($y$)")
-  st.markdown("- $x_i$ = Nilai fitur pada data pasien baru")
-  st.markdown("- $y_i$ = Nilai fitur pada data pelatihan historis")
-  st.markdown("- $n$ = Jumlah total fitur atribut (Usia, BMI, Glukosa, Tekanan Darah, Riwayat Keluarga)")
+
+  st.info(
+      "💡 **Analogi Sederhana:** Bayangkan kamu pindah ke lingkungan baru"
+      " dan ingin tahu apakah tetangga di sekitar ramah atau tidak. Cara"
+      " paling gampang adalah dengan melihat **tetangga terdekat rumahmu**."
+      " Jika sebagian besar tetangga terdekatmu ramah, kemungkinan besar kamu"
+      " juga akan menganggap lingkungan itu ramah."
+      " \n\nPrinsip inilah yang digunakan oleh **Algoritma KNN**!"
+  )
 
   st.markdown("---")
-  st.subheader("⚙️ Langkah Kerja Sistem:")
-  st.markdown("1. **Menentukan Nilai K:** Pengguna dapat menentukan jumlah tetangga terdekat ($K$) secara dinamis.")
-  st.markdown("2. **Menghitung Jarak:** Sistem menghitung nilai jarak Euclidean dari pasien baru ke seluruh data pasien di file Excel.")
-  st.markdown("3. **Mengurutkan Jarak:** Mengurutkan hasil perhitungan jarak dari yang terkecil (paling dekat).")
-  st.markdown("4. **Mayoritas Voting:** Mengambil $K$ data terdekat, lalu menentukan kelas mayoritas (Risiko Rendah / Tinggi) sebagai hasil prediksi akhir.")
+  st.subheader("🤖 Bagaimana Cara Kerja Sistem Ini?")
+  st.write(
+      "Saat kamu memasukkan data pasien baru (seperti Usia, BMI, Glukosa, dan"
+      " Tekanan Darah), komputer akan melakukan 3 langkah utama:"
+  )
+
+  st.markdown(
+      "1. **Menghitung Jarak (Kemiripan):** Komputer membandingkan data pasien"
+      " baru dengan seluruh data historis pasien yang ada di dalam file Excel"
+      " menggunakan rumus jarak matematika (*Euclidean Distance*)."
+  )
+  st.markdown(
+      "2. **Mencari Tetangga Terdekat ($K$):** Berdasarkan nilai $K$ yang kamu"
+      " atur (misal $K=3$), komputer akan memilih 3 data pasien lama yang"
+      " memiliki karakteristik **paling mirip (jaraknya paling kecil)** dengan"
+      " pasien baru."
+  )
+  st.markdown(
+      "3. **Keputusan Mayoritas (Voting):** Dari 3 pasien terdekat tadi, dilihat"
+      " mana yang jumlahnya lebih banyak—apakah kelompok **Risiko Tinggi** atau"
+      " **Risiko Rendah**. Kelompok terbanyak itulah yang akan menjadi hasil"
+      " prediksi akhir!"
+  )
+
+  st.markdown("---")
+  st.subheader("📐 Rumus Perhitungan Jarak (Euclidean Distance)")
+  st.write(
+      "Secara matematis, jarak kemiripan antar-pasien dihitung dengan rumus"
+      " berikut:"
+  )
+
+  st.latex(r"d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}")
+
+  st.markdown("Keterangan rumus:")
+  st.markdown(
+      "- $d(x, y)$ = Jarak kemiripan antara pasien baru ($x$) dan pasien lama"
+      " ($y$)"
+  )
+  st.markdown(
+      "- $(x_i - y_i)$ = Selisih nilai dari setiap parameter (misal selisih"
+      " kadar glukosa atau BMI)"
+  )
+  st.markdown(
+      "- $n$ = Total atribut yang dihitung (Usia, BMI, Glukosa, Tekanan Darah,"
+      " Riwayat Keluarga)"
+  )
