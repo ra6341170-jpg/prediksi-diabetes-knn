@@ -39,10 +39,11 @@ $$d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}$$
 ---
 
 ## 📂 Struktur Folder Proyek
+```text
 prediksi-diabetes-knn/
 │
 ├── .gitignore          # Konfigurasi file/folder yang diabaikan Git
-├── requirements.txt    # Daftar dependensi library Python (streamlit, scikit-learn, pandas, matplotlib, openpyxl)
+├── requirements.txt    # Daftar dependensi library Python
 ├── README.md           # Dokumentasi proyek
 ├── data-pasien.xlsx    # Dataset acuan pasien (Excel)
 └── app.py              # Kode utama aplikasi web Streamlit
