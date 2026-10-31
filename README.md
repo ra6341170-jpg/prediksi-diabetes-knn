@@ -1,13 +1,13 @@
 # 🩺 Sistem Pendukung Keputusan (SPK) - Prediksi Risiko Diabetes dengan KNN
 
-Aplikasi web interaktif berbasis Python dan [Streamlit](https://streamlit.io/) untuk mengidentifikasi tingkat risiko diabetes pada pasien menggunakan algoritma *K-Nearest Neighbors (KNN)*. Proyek ini dikembangkan sebagai bagian dari penugasan akademik mata kuliah Data Mining / Sistem Pendukung Keputusan (SPK).
+Aplikasi web interaktif berbasis Python dan [Streamlit](https://streamlit.io/) untuk mengidentifikasi tingkat risiko diabetes pada pasien menggunakan algoritma *K-Nearest Neighbors (KNN)*. Proyek ini dikembangkan sebagai bagian dari penugasan akademik mata kuliah Data Mining.
 
 🌐 **Akses Aplikasi Secara Online:** 👉 [Link Web Streamlit Prediksi Risiko Diabetes](https://ra6341170-jpg-prediksi-diabetes-knn-app-wug3y6.streamlit.app/)
 
 ---
 
 ## 📋 Fitur Utama
-- **Antarmuka Modern (`Wide Layout`):** Tata letak layar penuh yang rapi, responsif, dan nyaman digunakan tanpa ruang kosong yang berlebih di sisi layar.
+- **Multi-Page Layout & Desain Modern**: Antarmuka terstruktur dengan sidebar navigasi interaktif ala aplikasi enterprise.
 - **Dynamic Data Loading:** Memuat dataset historis pasien secara otomatis langsung dari file eksternal (`data-pasien.xlsx`).
 - **Parameter K Dinamis:** Pengguna dapat mengatur nilai $K$ (jumlah tetangga terdekat) secara fleksibel melalui *slider* interaktif (1 s.d. 9).
 - **Ilustrasi Grafik Sebaran & Pemilihan Fitur Sumbu:** Fitur visualisasi sebaran data pelatihan dengan pilihan atribut sumbu X dan Y yang dapat diatur bebas oleh pengguna.
