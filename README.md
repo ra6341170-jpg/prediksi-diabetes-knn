@@ -2,7 +2,7 @@
 
 Aplikasi web interaktif berbasis Python dan [Streamlit](https://streamlit.io/) untuk mengidentifikasi tingkat risiko diabetes pada pasien menggunakan algoritma *K-Nearest Neighbors (KNN)*. Proyek ini dikembangkan sebagai bagian dari penugasan akademik mata kuliah Data Mining.
 
-🌐 **Akses Aplikasi Secara Online:** 👉 [Link Web Streamlit Prediksi Risiko Diabetes](https://prediksi-diabetes-knn-odkxzsgx7bq36gtfnzumrf.streamlit.app/)[cite: 1]
+🌐 **Akses Aplikasi Secara Online:** 👉 [Link Web Streamlit Prediksi Risiko Diabetes](https://prediksi-diabetes-knn-odkxzsgx7bq36gtfnzumrf.streamlit.app/)
 
 ---
 
