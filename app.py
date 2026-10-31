@@ -45,7 +45,7 @@ with st.sidebar:
   )
   st.markdown("---")
   st.markdown("**Dibuat oleh:** Rizky Ardiansyah")
-  st.markdown("**Mata Kuliah:** Data Mining / SPK")
+  st.markdown("**Mata Kuliah:** Data Mining")
 
 
 # Memuat Dataset dari file Excel secara otomatis
